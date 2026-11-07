@@ -36,4 +36,8 @@ npm test               # logic, scanner and PDF tests
 npm run test:browser   # real-browser run (Playwright)
 ```
 
+## Deploying on Vercel
+
+`vercel.json` runs `node build.js` and publishes only the `public` folder, which holds `index.html`. Import the repository with the **Other** framework preset and keep the default settings.
+
 After changing any source file, run `npm run build` and commit the rebuilt `pencilmark.html` with it.
