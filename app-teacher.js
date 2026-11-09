@@ -149,7 +149,7 @@ function itemsHTML(ex) {
       <button class="link" data-act="open-item" data-i="${i}">${open ? 'Hide' : 'Question'}${it.q ? '<span class="dot"></span>' : ''}</button>
       ${open ? `<div class="qfull"><textarea data-i="${i}" data-k="q" rows="2" placeholder="Question text, needed for online exams">${esc(it.q)}</textarea>
         ${Array.from({ length: ex.choices }, (_, j) => `<label class="cl"><span class="bub sm">${LET[j]}</span><input data-i="${i}" data-c="${j}" value="${esc(it.c[j] || '')}" placeholder="Choice ${LET[j]}"></label>`).join('')}
-        <div class="row"><label class="cust">Points<input type="number" min="0.5" max="20" step="0.5" data-i="${i}" data-k="pts" value="${it.pts > 0 ? +it.pts : 1}"></label>
+        <div class="row"><label class="cust">Points<input type="number" inputmode="decimal" min="0.5" max="20" step="0.5" data-i="${i}" data-k="pts" value="${it.pts > 0 ? +it.pts : 1}"></label>
         <label class="row"><input type="checkbox" data-i="${i}" data-k="bonus" ${it.bonus ? 'checked' : ''} style="width:auto"> Give credit to everyone</label></div>
         <label class="f">Tag <span class="opt">optional, for the tag report</span><input data-i="${i}" data-k="tag" maxlength="30" value="${esc(it.tag || '')}" placeholder="Topic or skill, like Plate tectonics"></label></div>` : ''}</div>`;
   }).join('');
@@ -184,14 +184,14 @@ function editorHTML() {
   </section>
   <section class="blk"><h2>Length and choices</h2>
     <div class="seg" role="group" aria-label="Number of items">${[15, 20, 30, 60].map(n => `<button class="segb" data-act="set-n" data-n="${n}" aria-pressed="${ex.nItems === n}">${n}</button>`).join('')}
-      <label class="cust">Other<input type="number" min="1" max="60" id="f-n" value="${std ? '' : ex.nItems}" placeholder="1-60"></label></div>
+      <label class="cust">Other<input type="number" inputmode="numeric" min="1" max="60" id="f-n" value="${std ? '' : ex.nItems}" placeholder="1-60"></label></div>
     ${T.warn ? `<p class="note warn">${esc(T.warn)}</p>` : ''}
     <p class="hint">The printed sheet is the ${PM.formatFor(ex.nItems)}-item layout. Up to 60 items.</p>
     <div class="seg" role="group" aria-label="Choices per item">${[2, 3, 4, 5].map(k => `<button class="segb" data-act="set-k" data-k="${k}" aria-pressed="${ex.choices === k}">${LET.slice(0, k)[0]}-${LET[k - 1]}</button>`).join('')}</div>
   </section>
   <section class="blk"><h2>Answer key</h2>
     <p class="hint">Tap the right letter for each item, or type the whole key at once.</p>
-    <div class="row"><input class="mono" id="e-quick" placeholder="ABCDDABC…" style="flex:1 1 220px;width:auto" autocapitalize="characters" autocomplete="off"><button class="btn" data-act="apply-quick">Apply key</button></div>
+    <div class="row"><input class="mono" id="e-quick" placeholder="ABCDDABC…" style="flex:1 1 220px;width:auto" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="done"><button class="btn" data-act="apply-quick">Apply key</button></div>
     <div id="items">${itemsHTML(ex)}</div>
   </section>
   <section class="blk"><h2>Paste questions</h2>
@@ -202,8 +202,8 @@ function editorHTML() {
   </section>
   <section class="blk"><h2>Online exam settings</h2>
     <div class="grid2">
-      <label class="f">Time limit in minutes <span class="opt">0 means none</span><input type="number" min="0" max="300" data-f="minutes" value="${ex.minutes | 0}"></label>
-      <label class="f">Submit after leaving the page <span class="opt">0 means never</span><input type="number" min="0" max="20" data-f="maxAway" value="${ex.maxAway | 0}"></label>
+      <label class="f">Time limit in minutes <span class="opt">0 means none</span><input type="number" inputmode="numeric" min="0" max="300" data-f="minutes" value="${ex.minutes | 0}"></label>
+      <label class="f">Submit after leaving the page <span class="opt">0 means never</span><input type="number" inputmode="numeric" min="0" max="20" data-f="maxAway" value="${ex.maxAway | 0}"></label>
     </div>
     <label class="row"><input type="checkbox" data-f="shuffleQ" ${ex.shuffleQ ? 'checked' : ''} style="width:auto"> Shuffle question order for each student</label>
     <label class="row"><input type="checkbox" data-f="shuffleC" ${ex.shuffleC ? 'checked' : ''} style="width:auto"> Shuffle choices for each student</label>
@@ -239,7 +239,7 @@ function scanCard(s) {
     <div id="fl-${s.id}">${flagHTML(s)}</div>
     <div class="scanrow"><div class="cvwrap"><canvas class="rcv" data-cv="${s.id}" aria-label="Scanned sheet. Tap a bubble to correct an answer."></canvas></div>
     <div class="side">
-      <label class="f">Student ID<input class="mono" data-sf="sid" data-sid="${s.id}" value="${esc(s.sid)}" inputmode="numeric" placeholder="${esc(s.idHint)}"></label>
+      <label class="f">Student ID<input class="mono" data-sf="sid" data-sid="${s.id}" value="${esc(s.sid)}" inputmode="numeric" autocomplete="off" placeholder="${esc(s.idHint)}"></label>
       <label class="f">Name<input data-sf="name" data-sid="${s.id}" value="${esc(s.name)}" list="roster-names" autocomplete="off"></label>
       <p class="hint">Tap any bubble on the sheet to correct it. Tap again to clear. Green is correct, red is wrong, a green ring marks the right answer.</p>
       <div class="row"><button class="btn primary" data-act="scan-save" data-sid="${s.id}">${dup ? 'Replace earlier scan' : 'Save'}</button><button class="btn" data-act="scan-drop" data-sid="${s.id}">Discard</button></div>
@@ -301,11 +301,11 @@ function resultsHTML() {
   const flagged = rows.filter(x => x.r.away && x.r.away.n > 0).length;
   const body = rows.map(x => {
     const r = x.r, open = T.rowOpen === r.id;
-    return `<tr class="${open ? 'sel' : ''}"><td><button class="rowbtn" data-act="row" data-id="${esc(r.id)}">${esc(r.name || '(no name)')}</button><span class="sub">${esc(r.sid || '')}${r.sid ? ' · ' : ''}${r.source === 'online' ? 'Online' : 'Paper'}</span></td>
+    return `<tr class="${open ? 'sel' : ''}"><td><button class="rowbtn" data-act="row" data-id="${esc(r.id)}">${esc(r.name || '(no name)')}</button><span class="sub">${esc(r.sid || '')}${r.sid ? ' · ' : ''}${r.source === 'online' ? 'Online' : 'Paper'}${r.away && r.away.n ? ` · <b class="awaysub">${r.away.n}× away</b>` : ''}</span></td>
       <td class="mono hs">${esc(r.sid || '')}</td><td class="hs">${r.source === 'online' ? 'Online' : 'Paper'}</td>
       <td class="num">${x.g.earned}/${x.g.total}</td><td class="num">${fmtGrade(x.gr)}</td>
       <td>${x.pass ? '<span class="pill good">Passed</span>' : '<span class="pill bad">Not passed</span>'}</td>
-      <td class="num">${r.away ? (r.away.n ? `<span class="pill warn">${r.away.n}× away</span>` : '0') : ''}</td></tr>
+      <td class="num hs">${r.away ? (r.away.n ? `<span class="pill warn">${r.away.n}× away</span>` : '0') : ''}</td></tr>
       ${open ? `<tr class="sel"><td colspan="7">${detailHTML(ex, x)}</td></tr>` : ''}`;
   }).join('');
   return `<div class="head"><h1>Results</h1><button class="btn" data-act="export-csv"${n && DL ? '' : ' disabled'}>Export CSV</button></div>
@@ -313,7 +313,7 @@ function resultsHTML() {
   ${n ? `<div class="stats"><span><b>${n}</b>students</span><span><b>${fmtGrade(Math.round(avg * 10) / 10)}</b>average</span><span><b>${passed} of ${n}</b>passed (${fmtGrade(passMark())} or more)</span><span><b>${fmtGrade(hi)}</b>highest</span><span><b>${fmtGrade(lo)}</b>lowest</span><span><b>${(rows.reduce((t, x) => t + x.raw, 0) / n).toFixed(1)}%</b>MPS</span>${flagged ? `<span><b>${flagged}</b>left the page</span>` : ''}</div>
   ${histHTML(rows)}
   <div class="row"><span class="hint">Sort</span><select data-act="sort" style="width:auto"><option value="name"${T.sort === 'name' ? ' selected' : ''}>Name</option><option value="score"${T.sort === 'score' ? ' selected' : ''}>Highest score</option><option value="recent"${T.sort === 'recent' ? ' selected' : ''}>Most recent</option></select></div>
-  <div class="tablewrap"><table><thead><tr><th>Student</th><th class="hs">ID</th><th class="hs">Source</th><th class="num">Score</th><th class="num">${gradeName()}</th><th>Result</th><th class="num">Tab switches</th></tr></thead><tbody>${body}</tbody></table></div>`
+  <div class="tablewrap"><table><thead><tr><th>Student</th><th class="hs">ID</th><th class="hs">Source</th><th class="num">Score</th><th class="num">${gradeName()}</th><th>Result</th><th class="num hs">Tab switches</th></tr></thead><tbody>${body}</tbody></table></div>`
       : `<p class="muted">No results for this exam yet.</p>`}
   <section class="blk"><h2>Import online submissions</h2>
     <p class="hint">Paste the codes students sent you, one per line or all together.</p>
@@ -426,8 +426,8 @@ function tagsHTML() {
   <p class="hint">${esc(ex.title)}. MPS for each topic or skill you tagged, with the DepEd mastery level.</p>
   ${groups.length ? `<div class="tablewrap"><table><thead><tr><th>Tag</th><th>Items</th><th class="num">MPS</th><th>Mastery</th></tr></thead><tbody>${body}</tbody></table></div>${rows.length ? '' : '<p class="muted">MPS appears after you scan sheets or import codes.</p>'}` : '<p class="muted">No items are tagged yet. Tag items below, or open one in the editor and fill in its Tag.</p>'}
   <section class="blk"><h2>Tag a range of items</h2>
-    <div class="grid3"><label class="f">From item<input type="number" id="tg-from" min="1" max="${ex.items.length}" value="1"></label>
-    <label class="f">To item<input type="number" id="tg-to" min="1" max="${ex.items.length}" value="${Math.min(5, ex.items.length)}"></label>
+    <div class="grid3"><label class="f">From item<input type="number" inputmode="numeric" id="tg-from" min="1" max="${ex.items.length}" value="1"></label>
+    <label class="f">To item<input type="number" inputmode="numeric" id="tg-to" min="1" max="${ex.items.length}" value="${Math.min(5, ex.items.length)}"></label>
     <label class="f">Tag<input id="tg-name" maxlength="30" placeholder="Plate tectonics"></label></div>
     <div class="row"><button class="btn primary" data-act="tag-apply">Apply tag</button><span class="hint">Leave the tag empty to clear it from those items.</span></div></section>`;
 }
@@ -439,7 +439,7 @@ function settingsHTML() {
     <textarea data-s="roster" rows="8" class="mono" placeholder="000123, Maria Santos, 11-Rizal">${esc(c.roster)}</textarea></section>
   <section class="blk"><h2>Grades</h2>
     <div class="grid2"><label class="f">Show grades as<select data-s="scale"><option value="pct"${!dep ? ' selected' : ''}>Percent of points</option><option value="deped"${dep ? ' selected' : ''}>DepEd transmuted grade</option></select></label>
-    <label class="f">Passing mark<input type="number" min="0" max="100" step="1" data-s="pass" value="${esc(c.pass === '' ? passMark() : c.pass)}"></label></div>
+    <label class="f">Passing mark<input type="number" inputmode="numeric" min="0" max="100" step="1" data-s="pass" value="${esc(c.pass === '' ? passMark() : c.pass)}"></label></div>
     <p class="hint">${dep ? 'Percent is converted with the standard DepEd transmutation table: 60% becomes 75 and 100% stays 100. Check it against your own school\'s table.' : 'Students at or above the passing mark show as Passed.'}</p></section>
   <section class="blk"><h2>Student link</h2>
     <p class="hint">Open this page's Share menu, allow anyone with the link, copy the link, and paste it here once. Each exam's student link is built from it.</p>
@@ -728,7 +728,7 @@ function standaloneHTML(ex) {
   const css = ($('#pm-css') || {}).textContent, omr = ($('#pm-omr') || {}).textContent, app = ($('#pm-app') || {}).textContent;
   if (!css || !omr || !app) return '';
   const data = JSON.stringify(Object.assign(studentPayload(ex), { sig: sigOf(ex) })).replace(/</g, '\\u003c');
-  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(ex.title) + '</title>'
+  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style><title>' + esc(ex.title) + '</title>'
     + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">'
     + '<style>' + css + '</style></head><body><div class="wrap"><div id="app"></div></div><div id="toast" class="toast" role="status" aria-live="polite" hidden></div>'
     + '<script>window.__PM_EXAM=' + data + ';<\/script><script>' + omr + '<\/script><script>' + app + '<\/script></body></html>';

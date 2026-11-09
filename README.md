@@ -36,6 +36,10 @@ npm test               # logic, scanner and PDF tests
 npm run test:browser   # real-browser run (Playwright)
 ```
 
+## Phones
+
+The app is laid out for phones from 360px wide (small Android) up to large iPhones, held upright or sideways. Buttons and bubbles are at least 44px for thumbs, every text field uses a 16px font so iPhones do not zoom in when you tap it, number fields bring up the number keypad, and the student's Back / Next / Review bar stays pinned above the home bar. `npm run test:mobile` checks every teacher and student screen at 360, 375, 390 and 430px and sideways, with touch emulation.
+
 ## Deploying on Vercel
 
 `vercel.json` runs `node build.js` and publishes only the `public` folder, which holds `index.html`. Import the repository with the **Other** framework preset and keep the default settings.

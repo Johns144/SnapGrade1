@@ -173,8 +173,8 @@ textarea.code{font-family:var(--font-mono);font-size:13px;min-height:96px;word-b
 .qm.cur{outline:3px solid var(--hi);outline-offset:2px}
 .srow{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap}
 .rules{display:flex;flex-direction:column;gap:6px;padding-left:18px;margin:0;font-size:14px}
-.awayov{position:fixed;inset:0;z-index:50;background:rgba(10,14,20,.78);display:grid;place-items:center;padding:20px}
-.awaybox{background:var(--surface);border-radius:4px;border-top:6px solid var(--hi);padding:22px;max-width:420px;display:flex;flex-direction:column;gap:12px}
+.awayov{position:fixed;inset:0;z-index:50;background:rgba(10,14,20,.78);display:grid;place-items:center;overflow-y:auto;overscroll-behavior:contain;padding:max(20px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(20px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.awaybox{width:100%;background:var(--surface);border-radius:4px;border-top:6px solid var(--hi);padding:22px;max-width:420px;display:flex;flex-direction:column;gap:12px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:4px;border-left:6px solid var(--hi);font-size:14px;z-index:60;max-width:min(92vw,520px)}
 .qm.fl{border-style:dashed;border-color:var(--warn);color:var(--warn)}
 .qm.fl.done{color:var(--bg)}
@@ -229,6 +229,50 @@ table.st td:first-child{font-weight:600}
 .is-student .srow{position:sticky;bottom:0;z-index:4;background:var(--bg);padding-block:12px calc(12px + env(safe-area-inset-bottom,0px));border-top:1.5px solid var(--line);align-items:center}
 .stu #s-go{min-width:180px}
 .stu > div > h1{font-size:30px}
+/* phones and touch screens (Android and iPhone) */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,a,input,select,textarea,summary,label,[role=tab]{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+input,select,textarea,.f input,.f select,.f textarea,.mono,textarea.code{font-size:16px}
+.tab{min-height:46px}
+.link{display:inline-flex;align-items:center;min-height:44px;padding:0 2px}
+summary{padding:11px 0;min-height:44px}
+.rowbtn{display:block;width:100%;min-height:44px;padding:12px 0;text-align:left}
+.pill,.chip,.chip span,.hx span{font-size:12px}
+.toast{max-width:calc(100% - 32px);text-align:center}
+img,canvas,video{max-width:100%}
+@media (pointer:coarse){
+  .bub{width:46px;height:40px;font-size:13px}
+  .qm{width:46px;height:40px}
+  .qmap{gap:8px}
+  .segb{min-height:44px}
+  .btn{min-height:46px}
+  label.row{min-height:44px}
+  input[type=checkbox],input[type=radio]{width:22px;height:22px}
+}
+.awaysub{color:var(--warn);font-weight:700}
+@media (max-width:440px){
+  .tabs{gap:0}
+  .tab{flex:1 1 auto;padding-inline:6px;font-size:13px;letter-spacing:.04em}
+  .is-student .srow{flex-wrap:nowrap;gap:8px}
+  .is-student .srow .row{flex-wrap:nowrap;gap:8px}
+  .is-student .srow .btn{padding-inline:12px;white-space:nowrap}
+}
+/* no sticky hover on touch: show press feedback instead */
+@media (hover:none){
+  .btn:hover,input:hover,select:hover,textarea:hover{border-color:var(--line)}
+  .btn.primary:hover{background:var(--hi);border-color:var(--hi-edge)}
+  .tab:hover{color:var(--muted)} .tab[aria-selected=true]:hover{color:var(--ink)}
+  .choice:hover{border-color:var(--line)} .choice[aria-pressed=true]:hover{border-color:var(--ink)}
+  .item:hover,.mbtn:hover{background:none}
+  .btn:active,.item:active,.mbtn:active,.choice:active,.rowbtn:active{background:var(--soft)}
+  .btn.primary:active{background:var(--hi-2)}
+}
+/* short screens, phones held sideways */
+@media (max-height:480px) and (orientation:landscape){
+  .top{position:static}
+  .is-student .srow{padding-block:8px calc(8px + env(safe-area-inset-bottom,0px))}
+  .qtext{font-size:18px}
+}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 <div class="wrap"><div id="app"></div></div>

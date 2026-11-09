@@ -7,3 +7,6 @@ t[0-9]*-*.json
 t[0-9]*.pdf
 r[0-9]-*.png
 public/
+mob-*.png
+mobile-report.json
+s[0-9]*-*.png

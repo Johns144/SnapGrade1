@@ -36,9 +36,9 @@ async function student(token) {
         <li>Your score is not shown here. At the end you get a code to send to your teacher.</li>
       </ul>
       <div class="sheethead"><span class="cap">Fill in before you start</span>
-      <label class="f">Full name<input id="s-name" autocomplete="name" maxlength="80"></label>
+      <label class="f">Full name<input id="s-name" autocomplete="name" autocapitalize="words" enterkeyhint="next" maxlength="80"></label>
       <div class="grid2">
-        <label class="f">Student ID <span class="opt">optional</span><input id="s-id" inputmode="numeric" maxlength="20"></label>
+        <label class="f">Student ID <span class="opt">optional</span><input id="s-id" inputmode="numeric" autocomplete="off" enterkeyhint="next" maxlength="20"></label>
         <label class="f">Section <span class="opt">optional</span><input id="s-sec" maxlength="30"></label>
       </div></div>
       <div><button class="btn primary" id="s-go" disabled>Start exam</button></div>
